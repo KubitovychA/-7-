@@ -1,0 +1,49 @@
+const readline = require('readline');
+
+const rl = readline.createInterface({
+  input: process.stdin,
+  output: process.stdout
+});
+
+function mergeSortedArrays(arr1, arr2, order = 'asc') {
+  // Сортуємо обидва масиви залежно від напрямку
+  const sortOrder = order === 'asc' ? (a, b) => a - b : (a, b) => b - a;
+  const sortedArr1 = [...arr1].sort(sortOrder);
+  const sortedArr2 = [...arr2].sort(sortOrder);
+
+  // Об'єднуємо два масиви
+  let i = 0, j = 0;
+  const result = [];
+
+  while (i < sortedArr1.length && j < sortedArr2.length) {
+    if (sortedArr1[i] < sortedArr2[j]) {
+      result.push(sortedArr1[i++]);
+    } else {
+      result.push(sortedArr2[j++]);
+    }
+  }
+
+  // Додаємо залишки з масивів
+  return result.concat(sortedArr1.slice(i), sortedArr2.slice(j));
+}
+
+rl.question('Введіть перший масив (через кому): ', (input1) => {
+  const arr1 = input1.split(',').map(Number);
+
+  rl.question('Введіть другий масив (через кому): ', (input2) => {
+    const arr2 = input2.split(',').map(Number);
+
+    rl.question('Виберіть напрям сортування (asc/desc): ', (order) => {
+      if (!['asc', 'desc'].includes(order)) {
+        console.log('Невірний напрям сортування. Спробуйте знову.');
+        rl.close();
+        return;
+      }
+
+      const sorted = mergeSortedArrays(arr1, arr2, order);
+      console.log(`Результат сортування (${order}):`, sorted);
+
+      rl.close();
+    });
+  });
+});
